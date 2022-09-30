@@ -30,6 +30,6 @@ export class ApiPersonasService {
   }
 
   updatePersona(body: any){
-    return this.http.post('http://localhost:8080/persona', body);
+    return this.http.put<any>('http://localhost:8080/persona', body);
   }
 }

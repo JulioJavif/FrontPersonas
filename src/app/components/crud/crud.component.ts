@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { Personas } from 'src/app/core/model/Personas.model';
 import { ApiPersonasService } from 'src/app/core/services/api-personas.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-crud',
@@ -29,7 +30,8 @@ export class CrudComponent implements OnInit, OnDestroy {
   // Variables para la tabla
   personas: Array<Personas> = [];
   dtOptions: DataTables.Settings = {};
-  dtTrigger: Subject<any> = new Subject<any>();
+  dtTrigger = new Subject();
+  // dtTrigger: Subject<any> = new Subject<any>();
 
   constructor(private ApiPersonas: ApiPersonasService) { }
 
@@ -41,48 +43,22 @@ export class CrudComponent implements OnInit, OnDestroy {
   }
 
   fetchData(){
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 10,
-      processing: true,
-      serverSide: true,
-      data: this.personas,
-      language: {
-        search: 'Buscar'
-      },
-      ajax: (dataParams: any, callback) => {
-        this.ApiPersonas.getListaPersonas().subscribe(
-          result => {
-            this.personas = result.data;
-          },
-          err => {
-            console.log('Error al leer api');
+    this.ApiPersonas.getListaPersonas().subscribe(
+      result => {
+        this.personas = result.data;
+        this.dtTrigger.next(3);
+        this.dtOptions = {
+          paging: false,
+          language: {
+            url: '//cdn.datatables.net/plug-ins/1.12.1/i18n/es-CO.json'
           }
-        );
-        callback({
-          data: [],
-        });
+        };
       },
-      columns: [
-        {
-          data: 'name',
-        },
-        {
-          data: 'id',
-        },
-        {
-          data: 'birthday',
-        },
-        {
-          data: 'phone',
-        },
-        {
-          data: 'email',
-        },
-      ],
-      paging: false,
-      info: false
-    };
+      err => {
+      },
+      () => {
+      }
+    );
   }
 
   save(){
@@ -98,15 +74,21 @@ export class CrudComponent implements OnInit, OnDestroy {
 
     this.ApiPersonas.savePersona(body).subscribe(
       result => {
-        alert(Object.values(result));
+        if (result?.id) {
+          Swal.fire('Guardado', 'Se guardó la persona', 'success');
+        } else {
+          Swal.fire('Error', 'No se pudo guardar la persona', 'warning');
+        }
       },
       err => {
-        alert(err);
+        Swal.fire('Error', 'Error al intentar guardar persona', 'error');
       }
     );
 
-    this.formularioPersonas.reset();
-    this.reload();
+    setTimeout(() => {
+      this.formularioPersonas.reset();
+      this.reload();
+    }, 400);
   }
 
   update(){
@@ -122,16 +104,22 @@ export class CrudComponent implements OnInit, OnDestroy {
 
     this.ApiPersonas.updatePersona(body).subscribe(
       result => {
-        alert(Object.values(result));
+        if (result?.id) {
+          Swal.fire('Guardado', 'Se guardó la persona', 'success');
+        } else {
+          Swal.fire('Error', 'No se pudo guardar la persona', 'warning');
+        }
       },
       err => {
-        alert(err);
+        Swal.fire('Error', 'Error al intentar guardar persona', 'error');
       }
     );
 
-    this.formularioPersonas.reset();
-    this.contexto = 'Create';
-    this.reload();
+    setTimeout(() => {
+      this.formularioPersonas.reset();
+      this.contexto = 'Create';
+      this.reload();
+    }, 400);
   }
 
   ngOnDestroy(): void {
@@ -141,24 +129,32 @@ export class CrudComponent implements OnInit, OnDestroy {
   eliminarPersona(id: Number){
     this.ApiPersonas.deletePersona(id).subscribe(
       result => {
-        alert(result);// true || false
+        if (result) {
+          Swal.fire('Eliminado', 'Se ha eliminado una persona', 'success');
+        } else {
+          Swal.fire('No eliminado', 'No se pudo eliminar a la persona', 'warning');
+        }
       },
       err => {
-        alert(err);
+        Swal.fire('Error', 'Ha ocurrido un error al eliminar', 'error');
       }
     );
-    this.reload();
+
+    setTimeout(() => {
+      this.reload();
+    }, 400);
   }
 
   editarPersona(id: Number){
     this.ApiPersonas.getPersona(id).subscribe(
       result => {
-        this.name.setValue(result.name);
+        this.name.setValue(result.name.trim());
         this.id.setValue(result.id);
         this.birthday.setValue(String(result.birthday).split('T')[0]);
-        this.phone.setValue(result.phone);
-        this.email.setValue(result.email);
-        this.contexto = 'Update'
+        this.phone.setValue(result.phone.trim());
+        this.email.setValue(result.email.trim());
+        this.contexto = 'Update';
+        this.id.disable();
       }
     );
   }

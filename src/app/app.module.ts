@@ -24,11 +24,11 @@ import { CrudComponent } from './components/crud/crud.component';
   imports: [
     CoreModule,
     BrowserModule,
-    DataTablesModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    DataTablesModule,
   ],
   providers: [
     ApiPersonasService,

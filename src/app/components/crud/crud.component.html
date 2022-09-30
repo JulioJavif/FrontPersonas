@@ -30,7 +30,7 @@
     </div>
     <div *ngIf="contexto == 'Update'">
       <button class="btn btn-sm btn-success margin-2px" (click)="update()">Actualizar</button>
-      <button class="btn btn-sm btn-warning margin-2px" (click)="contexto='Create';formularioPersonas.reset();">Cancelar</button>
+      <button class="btn btn-sm btn-warning margin-2px" (click)="contexto='Create';formularioPersonas.reset();this.id.enable();">Cancelar</button>
     </div>
   </div>
 </form>
@@ -50,7 +50,7 @@
     </tr>
   </thead>
   <tbody *ngIf="personas?.length != 0">
-    <tr *ngFor="let item of personas">
+    <tr *ngFor="let item of personas; let i = index">
       <td> {{item.name}} </td>
       <td> {{item.id}} </td>
       <td> {{item.birthday.split('T')[0]}} </td>
