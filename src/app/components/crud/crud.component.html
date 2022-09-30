@@ -1,0 +1,71 @@
+<br>
+<form class="form border addpadding" [formGroup]="formularioPersonas" action="">
+  <div class="row text-center">
+    <h6>Crear o editar persona</h6>
+  </div>
+  <div class="row">
+    <div class="col">
+      <input [formControl]="name" type="text" class="form-control margin-2px" placeholder="Nombre" aria-label="Nombre">
+    </div>
+    <div class="col">
+      <input [formControl]="id" type="text" class="form-control margin-2px" placeholder="Identificación" aria-label="Identificación">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <input [formControl]="birthday" type="text" class="form-control margin-2px" placeholder="Cumpleaños formato (Año-Mes-Día)" aria-label="Cumpleaños">
+    </div>
+    <div class="col">
+      <input [formControl]="phone" type="text" class="form-control margin-2px" placeholder="Teléfono" aria-label="Teléfono">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <input [formControl]="email" type="text" class="form-control margin-2px" placeholder="Email" aria-label="Email">
+    </div>
+  </div>
+  <div class="row">
+    <div *ngIf="contexto == 'Create'">
+      <button class="btn btn-sm btn-success margin-2px" (click)="save()" [disabled]="!formularioPersonas.valid">Guardar</button>
+    </div>
+    <div *ngIf="contexto == 'Update'">
+      <button class="btn btn-sm btn-success margin-2px" (click)="update()">Actualizar</button>
+      <button class="btn btn-sm btn-warning margin-2px" (click)="contexto='Create';formularioPersonas.reset();">Cancelar</button>
+    </div>
+  </div>
+</form>
+<hr><br>
+<div class="row text-center">
+  <h6>Lista de personas</h6>
+</div>
+<table datatable [dtOptions]="dtOptions" class="row-border hover table table-bordered" id="tablaPersonas" width="100%">
+  <thead><br>
+    <tr class="table-info">
+      <th scope="col">Nombre</th>
+      <th scope="col">Identificación</th>
+      <th scope="col">Cumpleaños</th>
+      <th scope="col">Teléfono</th>
+      <th scope="col">Correo</th>
+      <th>Opciones</th>
+    </tr>
+  </thead>
+  <tbody *ngIf="personas?.length != 0">
+    <tr *ngFor="let item of personas">
+      <td> {{item.name}} </td>
+      <td> {{item.id}} </td>
+      <td> {{item.birthday.split('T')[0]}} </td>
+      <td> {{item.phone ? item.phone : 'No registra'}} </td>
+      <td> {{item.email ? item.email : 'No registra'}} </td>
+      <th>
+        <button class="btn btn-info btn-sm btn-izq" (click)="editarPersona(item.id)">Editar</button>
+        <button class="btn btn-danger btn-sm" (click)="eliminarPersona(item.id)">Eliminar</button>
+      </th>
+    </tr>
+  </tbody>
+  <tbody *ngIf="personas?.length == 0">
+    <tr>
+      <td colspan="6" class="no-data-available">No data!</td>
+    </tr>
+  </tbody>
+</table>
+

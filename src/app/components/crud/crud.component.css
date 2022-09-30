@@ -1,0 +1,17 @@
+.btn-izq{
+  margin-right: 4px;
+}
+
+.margin-2px{
+  margin-top: 2px;
+  margin-bottom: 2px;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.addpadding{
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
