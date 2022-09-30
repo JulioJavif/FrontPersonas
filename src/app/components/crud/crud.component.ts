@@ -147,6 +147,7 @@ export class CrudComponent implements OnInit, OnDestroy {
 
   editarPersona(id: Number){
     this.formularioPersonas.reset();
+    this.id.disable();
     this.contexto = 'Update';
     this.ApiPersonas.getPersona(id).subscribe(
       result => {
@@ -155,7 +156,6 @@ export class CrudComponent implements OnInit, OnDestroy {
         this.birthday.setValue(String(result.birthday).split('T')[0]);
         this.phone.setValue(result.phone.trim());
         this.email.setValue(result.email.trim());
-        this.id.disable();
       }
     );
   }
